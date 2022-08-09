@@ -23,19 +23,24 @@ function App() {
     return (
         <div>
             {images.map((src, index) => (
-                <img
-                    src={src}
-                    onClick={() => openImageViewer(index)}
-                    width="300"
-                    key={index}
-                    style={{ margin: "10px", border: "solid" }}
-                    alt=""
-                />
+                <div className="image-block">
+                    <img
+                        src={src.image}
+                        onClick={() => openImageViewer(index)}
+                        width="300"
+                        key={index}
+                        style={{ margin: "10px", border: "solid" }}
+                        alt=""
+                    />
+                    <span class="labels">
+                        {src.labels.map(lbl => <p>{lbl}</p>)}
+                    </span>
+                </div>
             ))}
 
             {isViewerOpen && (
                 <ImageViewer
-                    src={images}
+                    src={images.map(img => img.image)}
                     currentIndex={currentImage}
                     onClose={closeImageViewer}
                     disableScroll={false}
@@ -68,7 +73,12 @@ const loadDrawings = async () => {
 
     drawings = drawings.filter((drawing)=>drawing.hasOwnProperty('image'));
 
-    let images = drawings.map((drawing) => drawing.hasOwnProperty('image') ? drawing.image.url : null );
+    let images = drawings.map((drawing) => {
+        return {
+            image: drawing.hasOwnProperty('image') ? drawing.image.url : null,
+            labels: drawing.hasOwnProperty('labels') ? drawing.labels.map((label) => label.Name) : []
+        }
+    });
 
     return images;
 
